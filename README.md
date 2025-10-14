@@ -25,4 +25,5 @@ npm run dev
 ```
 
 AG-UI Server will be available on [localhost 3001](http://localhost:3001/) via proxy
+
 AG-UI Chat will be available on [localhost 3005](http://localhost:3005/)
