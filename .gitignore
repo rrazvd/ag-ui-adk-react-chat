@@ -1,0 +1,7 @@
+node_modules
+ag-ui-docs
+.vscode
+/dist
+agent/__pycache__
+agent/.venv
+agent/sessions.db
