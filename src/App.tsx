@@ -150,7 +150,7 @@ const App: React.FC = () => {
 
               setMessages(prev => [...prev, itemsMessage]);
 
-              // Create tool result message to send back to the agent using proper ToolMessage type
+              // Create tool result message
               const toolResult: ToolMessage = {
                 id: `tool-result-${Date.now()}`,
                 role: 'tool',
