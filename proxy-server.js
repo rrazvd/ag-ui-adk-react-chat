@@ -10,7 +10,7 @@ app.use(cors());
 
 // Proxy middleware
 app.use('/ag-ui', createProxyMiddleware({
-  target: 'http://localhost:8000',
+  target: 'http://127.0.0.1:8000',
   changeOrigin: true,
   onError: (err, req, res) => {
     console.error('Proxy error:', err);
