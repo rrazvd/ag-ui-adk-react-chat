@@ -1,4 +1,5 @@
 import React from 'react';
+
 import './ItemsList.css';
 
 interface ItemsListProps {
@@ -13,7 +14,6 @@ const ItemsList: React.FC<ItemsListProps> = ({ items, title }) => {
       <div className="items-carousel">
         {items.map((item, index) => (
           <div key={index} className="item-badge">
-            <div className="item-logo">�</div>
             <span className="item-name">{item}</span>
           </div>
         ))}
