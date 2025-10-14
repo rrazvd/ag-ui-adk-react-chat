@@ -1,6 +1,6 @@
 # AG-UI ADK React Chat
 
-A simply AG-UI ADK React Chat to explore and understand the technology. 
+A simple AG-UI ADK React Chat to explore and understand the technology. 
 
 ## 🚀 Get started
 
