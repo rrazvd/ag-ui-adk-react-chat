@@ -1,6 +1,6 @@
 # AG-UI ADK React Chat
 
-A simply AG-UI ADK React Chat.
+A simply AG-UI ADK React Chat to explore and understand the technology. 
 
 ## 🚀 Get started
 
@@ -21,5 +21,5 @@ export GOOGLE_API_KEY="your-google-api-key-here"
 
 ### 4. Run the project as dev
 ```bash
-npm run dev:agent
+npm run dev
 ```
