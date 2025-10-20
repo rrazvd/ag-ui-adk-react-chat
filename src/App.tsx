@@ -9,7 +9,6 @@ import type {
   ToolCallStartEvent,
   ToolCallArgsEvent,
   ToolCallEndEvent,
-  SystemMessage,
   UserMessage, 
   ToolMessage, 
   Tool,
@@ -62,23 +61,9 @@ const App: React.FC = () => {
 
     // Set the agent state with proper context
     httpAgent.state = {
-      user_id: "user-1234",
-      user_name: "Joe Doeh",
+      user_id: "user-123",
+      user_name: "Joe Doe",
     };
-
-    const systemMessage: SystemMessage = {
-      id: `system-${Date.now()}`,
-      role: 'system',
-      content: `
-        Always verify the possibility of using rendering tools to display data visually to the user.
-        You must ensure that the user has the most visual experience possible, utilizing the available rendering tools.
-
-        Always present items available data using the render_ItemsList rendering tool.
-        Example: "Here are the available items: " => calls the tool render_ItemsList.
-      `
-    };
-
-    httpAgent.addMessage(systemMessage)
 
     setAgent(httpAgent);
   }, []);
@@ -170,7 +155,7 @@ const App: React.FC = () => {
                 id: `tool-result-${Date.now()}`,
                 role: 'tool',
                 content: JSON.stringify({
-                  result: 'success',
+                  status: 'success',
                   message: 'Items were rendered successfully.',
                   itemsCount: (toolCallArgs as any).items?.length || 0
                 }),
