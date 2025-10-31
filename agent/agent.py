@@ -14,7 +14,13 @@ from ag_ui_adk import ADKAgent, add_adk_fastapi_endpoint
 
 def get_items() -> list:
     """Returns a list of available items."""
-    mocked_items = ['Item 1', 'Item 2', 'Item 3', 'Item 4', 'Item 5']
+    mocked_items = [
+        {'name': 'Item 1', 'description': 'It is the first item of the list'},
+        {'name': 'Item 2', 'description': 'It is the second item of the list'},
+        {'name': 'Item 3', 'description': 'It is the third item of the list'},
+        {'name': 'Item 4', 'description': 'It is the fourth item of the list'},
+        {'name': 'Item 5', 'description': 'It is the fifth item of the list'}
+    ]
     return mocked_items
 
 root_agent = Agent(

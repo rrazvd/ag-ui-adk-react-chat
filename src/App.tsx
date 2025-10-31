@@ -71,8 +71,9 @@ const App: React.FC = () => {
             You must ensure that the user has the most visual experience possible, utilizing the available rendering tools.
 
             Before call an render tool, always send a text message to inform the user about the data that will be presented visually.
-            Always present items available data using the render_ItemsList rendering tool.
+            Always present items available names using the render_ItemsList rendering tool.
             Example: "Here are the available items: " => calls the tool render_ItemsList.
+            After the user selects an item, respond appropriately based on description of the selected item.
           `
         } as SystemMessage
       ]
@@ -89,20 +90,23 @@ const App: React.FC = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  const sendMessage = async () => {
-    if (!inputValue.trim() || !agent || isLoading) return;
+  const sendMessage = async (messageText?: string) => {
+    const textToSend = messageText || inputValue;
+    if (!textToSend.trim() || !agent || isLoading) return;
 
     const userMessage: UIMessage = {
       id: `user-${Date.now()}`,
-      text: inputValue,
+      text: textToSend,
       sender: 'user',
       timestamp: new Date()
     };
 
     setMessages(prev => [...prev, userMessage]);
     setIsLoading(true);
-    const currentInput = inputValue;
-    setInputValue('');   
+    const currentInput = textToSend;
+    if (!messageText) {
+      setInputValue('');
+    }   
 
     try {      
       const userMessage: UserMessage = {
@@ -223,6 +227,14 @@ const App: React.FC = () => {
     }
   };
 
+  const sendItemMessage = (itemText: string) => {
+    sendMessage(itemText);
+  };
+
+  const handleSendClick = () => {
+    sendMessage();
+  };
+
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -251,7 +263,10 @@ const App: React.FC = () => {
           <div key={message.id} className={`message ${message.sender}`}>
             <div className="message-content">
               {message.type === 'items' && message.items ? (
-                <ItemsList items={message.items} title="Available Items" />
+                <ItemsList 
+                  items={message.items} 
+                  onItemClick={sendItemMessage}
+                />
               ) : (
                 message.text
               )}
@@ -284,7 +299,7 @@ const App: React.FC = () => {
           rows={1}
         />
         <button 
-          onClick={sendMessage} 
+          onClick={handleSendClick} 
           disabled={!inputValue.trim() || isLoading}
         >
           Send

@@ -4,16 +4,26 @@ import './ItemsList.css';
 
 interface ItemsListProps {
   items: string[];
-  title?: string;
+  onItemClick?: (item: string) => void;
 }
 
-const ItemsList: React.FC<ItemsListProps> = ({ items, title }) => {
+const ItemsList: React.FC<ItemsListProps> = ({ items, onItemClick }) => {
+  const handleItemClick = (item: string) => {
+    if (onItemClick) {
+      onItemClick(item);
+    }
+  };
+
   return (
     <div className="items-container">
-      {title && <h4 className="items-title">{title}</h4>}
       <div className="items-carousel">
         {items.map((item, index) => (
-          <div key={index} className="item-badge">
+          <div 
+            key={index} 
+            className="item-badge"
+            onClick={() => handleItemClick(item)}
+            style={{ cursor: onItemClick ? 'pointer' : 'default' }}
+          >
             <span className="item-name">{item}</span>
           </div>
         ))}
