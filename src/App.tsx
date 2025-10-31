@@ -48,15 +48,16 @@ const TOOL_DEFINITIONS: Tool[] = [
 ];
 
 const App: React.FC = () => {
+  const [agentUrl, setAgentUrl] = useState('http://localhost:3001/ag-ui');
   const [agent, setAgent] = useState<HttpAgent | null>(null);
   const [messages, setMessages] = useState<UIMessage[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  const createAgent = (url: string) => {
     const httpAgent = new HttpAgent({
-      url: 'http://localhost:3001/ag-ui',
+      url,
       initialState: {
         user_id: "user-123",
         user_name: "Joe Doe"
@@ -78,7 +79,11 @@ const App: React.FC = () => {
     });
 
     setAgent(httpAgent);
-  }, []);
+  };
+
+  useEffect(() => {
+    createAgent(agentUrl);
+  }, [agentUrl]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -229,6 +234,17 @@ const App: React.FC = () => {
     <div className="app">
       <div className="chat-header">
         <h1>AG-UI Chat Playground</h1>
+        <div className="url-input-container">
+          <label htmlFor="agent-url">Agent URL:</label>
+          <input
+            id="agent-url"
+            type="text"
+            value={agentUrl}
+            onChange={(e) => setAgentUrl(e.target.value)}
+            placeholder="http://localhost:3001/ag-ui"
+            className="url-input"
+          />
+        </div>
       </div>
       <div className="chat-messages">
         {messages.map((message) => (
