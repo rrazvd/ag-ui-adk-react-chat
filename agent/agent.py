@@ -22,17 +22,7 @@ root_agent = Agent(
     model="gemini-2.5-flash",
     instruction="""
         You are a helpful assistant that provides information about available items.
-        
-        Always check the possibility of using rendering tools to display data visually to the user.
-        You must ensure that the user has the most visual experience possible, using the available rendering tools.
-
-        ** AVAILABLE ITEMS **
-            - get_items: Get a list of available items.
-                Use case example: "What items are available?";
-
-                ALWAYS show data using the render_Items rendering tool.
-                When the render_Items tool returns "success" it means the rendering was successful, 
-                so do not present the data in plain text format, just indicate: "Here are the available items for you to choose from.".
+        ALWAYS Wait for the user to ask for the list of items before providing it.
 
         ## USER CONTEXT:
         - User name: "{user_name}"

@@ -9,9 +9,10 @@ import type {
   ToolCallStartEvent,
   ToolCallArgsEvent,
   ToolCallEndEvent,
+  SystemMessage,
   UserMessage, 
   ToolMessage, 
-  Tool,
+  Tool
 } from '@ag-ui/core';
 
 import ItemsList from './ItemsList';
@@ -54,16 +55,26 @@ const App: React.FC = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Initialize the HttpAgent with proper configuration
     const httpAgent = new HttpAgent({
-      url: 'http://localhost:3001/ag-ui'
-    });
+      url: 'http://localhost:3001/ag-ui',
+      initialState: {
+        user_id: "user-123",
+        user_name: "Joe Doe"
+      },
+      initialMessages: [
+        {
+          id: `system-${Date.now()}`,
+          role: 'system',
+          content: `
+            Always verify the possibility of using rendering tools to display data visually to the user.
+            You must ensure that the user has the most visual experience possible, utilizing the available rendering tools.
 
-    // Set the agent state with proper context
-    httpAgent.state = {
-      user_id: "user-123",
-      user_name: "Joe Doe",
-    };
+            Always present items available data using the render_ItemsList rendering tool.
+            Example: "Here are the available items: " => calls the tool render_ItemsList.
+          `
+        } as SystemMessage
+      ]
+    });
 
     setAgent(httpAgent);
   }, []);
@@ -87,18 +98,16 @@ const App: React.FC = () => {
     const currentInput = inputValue;
     setInputValue('');   
 
-    try {
-      console.log('Sending message:', currentInput);
-      
-      // Create proper UserMessage for the agent
-      const agentMessage: UserMessage = {
+    try {      
+      const userMessage: UserMessage = {
         id: `user-${Date.now()}`,
         role: 'user',
         content: currentInput
       };
-      
-      agent.addMessage(agentMessage);
+      agent.addMessage(userMessage);
+
       console.log('Agent messages before run:', agent.messages);
+      console.log('Agent state before run:', agent.state);
 
       const result = await agent.runAgent({
         tools: TOOL_DEFINITIONS
@@ -134,7 +143,6 @@ const App: React.FC = () => {
 
         onToolCallEndEvent: (params: { event: ToolCallEndEvent; toolCallName: string; toolCallArgs: any; messages: any[]; }): AgentStateMutation | void => {
           console.log('Tool call ended:', params.event, params.toolCallArgs, params.toolCallName);
-
           const {toolCallName, toolCallArgs, event: { toolCallId }} = params || {};
 
           if (toolCallName === 'render_ItemsList') {
@@ -155,19 +163,16 @@ const App: React.FC = () => {
                 id: `tool-result-${Date.now()}`,
                 role: 'tool',
                 content: JSON.stringify({
-                  status: 'success',
-                  message: 'Items were rendered successfully.',
-                  itemsCount: (toolCallArgs as any).items?.length || 0
+                  result: 'success',
+                  message: 'Items were rendered successfully.'
                 }),
                 toolCallId
               };
               
-              console.log('Tool result message: ', toolResult);
-              
               // Return AgentStateMutation to add the tool result message to the conversation
               return {
                 messages: [...params.messages, toolResult]
-              };
+              }; 
             } catch (error) {              
               const toolErrorResult: ToolMessage = {
                 id: `tool-error-${Date.now()}`,
@@ -179,8 +184,6 @@ const App: React.FC = () => {
                 }),
                 toolCallId
               };
-
-              console.error('Tool error result: ', toolErrorResult);
 
               return {
                 messages: [...params.messages, toolErrorResult]
@@ -205,7 +208,9 @@ const App: React.FC = () => {
       });
 
       console.log('Agent run result:', result);
-    
+
+      console.log('Agent messages after run:', agent.messages);
+      console.log('Agent state after run:', agent.state);
     } catch (error) {
       console.error('Error in sendMessage:', error);
       setIsLoading(false);
