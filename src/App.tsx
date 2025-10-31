@@ -69,6 +69,7 @@ const App: React.FC = () => {
             Always verify the possibility of using rendering tools to display data visually to the user.
             You must ensure that the user has the most visual experience possible, utilizing the available rendering tools.
 
+            Before call an render tool, always send a text message to inform the user about the data that will be presented visually.
             Always present items available data using the render_ItemsList rendering tool.
             Example: "Here are the available items: " => calls the tool render_ItemsList.
           `
@@ -227,7 +228,7 @@ const App: React.FC = () => {
   return (
     <div className="app">
       <div className="chat-header">
-        <h1>AG-UI Chat</h1>
+        <h1>AG-UI Chat Playground</h1>
       </div>
       <div className="chat-messages">
         {messages.map((message) => (
