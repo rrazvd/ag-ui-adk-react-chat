@@ -1,4 +1,5 @@
-.items-container {
+/* Items List Block */
+.items-list {
   margin: 12px 0;
   padding: 8px;
   border-radius: 8px;
@@ -6,18 +7,7 @@
   overflow: hidden;
 }
 
-.items-title {
-  margin: 0 0 12px 0;
-  font-size: 14px;
-  font-weight: 600;
-  color: #333;
-}
-
-.items-name {
-  color: #333;
-}
-
-.items-carousel {
+.items-list__carousel {
   display: flex;
   gap: 8px;
   overflow-x: auto;
@@ -26,20 +16,20 @@
   scrollbar-color: #cbd5e0 transparent;
 }
 
-.items-carousel::-webkit-scrollbar {
+.items-list__carousel::-webkit-scrollbar {
   height: 4px;
 }
 
-.items-carousel::-webkit-scrollbar-track {
+.items-list__carousel::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.items-carousel::-webkit-scrollbar-thumb {
+.items-list__carousel::-webkit-scrollbar-thumb {
   background-color: #cbd5e0;
   border-radius: 2px;
 }
 
-.item-badge {
+.items-list__item {
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
@@ -50,20 +40,27 @@
   font-weight: 500;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: all 0.2s ease;
-  cursor: pointer;
   user-select: none;
   white-space: nowrap;
+  cursor: default;
 }
 
-.item-badge:hover {
+.items-list__item--clickable {
+  cursor: pointer;
+}
+
+.items-list__item--clickable:hover {
   background: #d1d8e0;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
   transform: translateY(-1px);
 }
 
-.item-badge:active {
+.items-list__item--clickable:active {
   transform: translateY(0);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   background: #c1c8d0;
 }
 
+.items-list__item-name {
+  color: #333;
+}

@@ -15,16 +15,15 @@ const ItemsList: React.FC<ItemsListProps> = ({ items, onItemClick }) => {
   };
 
   return (
-    <div className="items-container">
-      <div className="items-carousel">
+    <div className="items-list">
+      <div className="items-list__carousel">
         {items.map((item, index) => (
           <div 
             key={index} 
-            className="item-badge"
+            className={`items-list__item ${onItemClick ? 'items-list__item--clickable' : ''}`}
             onClick={() => handleItemClick(item)}
-            style={{ cursor: onItemClick ? 'pointer' : 'default' }}
           >
-            <span className="item-name">{item}</span>
+            <span className="items-list__item-name">{item}</span>
           </div>
         ))}
       </div>

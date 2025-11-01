@@ -290,20 +290,20 @@ const App: React.FC = () => {
 
   return (
     <div className="app">
-      <div className="chat-header">
-        <h1>AG-UI ADK Chat Playground</h1>
-        <div className="url-input-container">
-          <label htmlFor="agent-url">AG-UI URL:</label>
+      <div className="header">
+        <h1 className="header__title">AG-UI ADK Chat Playground</h1>
+        <div className="header__url-input">
+          <label htmlFor="agent-url" className="header__label">AG-UI URL:</label>
           <input
             id="agent-url"
             type="text"
             value={agentUrl}
             onChange={(e) => setAgentUrl(e.target.value)}
             placeholder="http://localhost:3001/ag-ui"
-            className="url-input"
+            className="header__input"
           />
           <button 
-            className="connect-button"
+            className="header__button"
             onClick={createNewThread}
             title="Connect and create new thread"
           >
@@ -311,10 +311,10 @@ const App: React.FC = () => {
           </button>
         </div>
       </div>
-      <div className="main-content">
+      <div className="app__content">
         <div className="sidebar">
-          <div className="sidebar-section">
-            <label htmlFor="agent-state" className="sidebar-label">
+          <div className="sidebar__section">
+            <label htmlFor="agent-state" className="sidebar__label">
               Agent State:
             </label>
             <textarea
@@ -322,36 +322,36 @@ const App: React.FC = () => {
               value={stateTextarea}
               onChange={(e) => setStateTextarea(e.target.value)}
               placeholder='{}'
-              className="json-input"
+              className="sidebar__textarea"
               rows={10}
             />
             <button 
               onClick={updateAgentState} 
-              className="update-state-btn"
+              className="sidebar__button"
               disabled={!agent}
             >
               Update State
             </button>
           </div>
         </div>
-        <div className="chat-container">
-          <div className="chat-header-inner">
-            <div className="thread-info">
-              <span className="thread-label">Thread ID:</span>
-              <span className="thread-id">{agent?.threadId || 'Not specified'}</span>
+        <div className="chat">
+          <div className="chat__header">
+            <div className="chat__thread-info">
+              <span className="chat__thread-label">Thread ID:</span>
+              <span className="chat__thread-id">{agent?.threadId || 'Not specified'}</span>
             </div>
             <button 
-              className="new-thread-button"
+              className="chat__new-thread-button"
               onClick={createNewThread}
               title="Create new thread"
             >
               +
             </button>
           </div>
-          <div className="chat-messages">
+          <div className="chat__messages">
             {messages.map((message) => (
-              <div key={message.id} className={`message ${message.sender}`}>
-                <div className="message-content">
+              <div key={message.id} className={`message message--${message.sender}`}>
+                <div className="message__content">
                   {message.type === 'items' && message.items ? (
                     <ItemsList
                       items={message.items}
@@ -361,15 +361,15 @@ const App: React.FC = () => {
                     message.text
                   )}
                 </div>
-                <div className="message-time">
+                <div className="message__time">
                   {message.timestamp.toLocaleTimeString()}
                 </div>
               </div>
             ))}
             {isLoading && (
-              <div className="message agent">
-                <div className="message-content loading">
-                  <div className="typing-indicator">
+              <div className="message message--agent">
+                <div className="message__content message__content--loading">
+                  <div className="message__typing-indicator">
                     <span></span>
                     <span></span>
                     <span></span>
@@ -379,7 +379,7 @@ const App: React.FC = () => {
             )}
             <div ref={messagesEndRef} />
           </div>
-          <div className="chat-input">
+          <div className="chat__input">
             <textarea
               ref={inputRef}
               value={inputValue}
@@ -388,15 +388,16 @@ const App: React.FC = () => {
               placeholder="Type your message..."
               disabled={isLoading}
               rows={1}
+              className="chat__textarea"
             />
             <button 
               onClick={handleButtonClick} 
               disabled={!isLoading && !inputValue.trim()}
-              className={isLoading ? 'stop-button' : 'send-button'}
+              className={`chat__button ${isLoading ? 'chat__button--stop' : 'chat__button--send'}`}
             >
               {isLoading ? (
                 <>
-                  <span className="stop-icon">⏹</span>
+                  <span className="chat__button-icon">⏹</span>
                   Stop
                 </>
               ) : (
