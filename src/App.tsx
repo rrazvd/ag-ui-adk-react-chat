@@ -29,7 +29,7 @@ interface UIMessage {
   items?: string[];
 }
 
-const TOOL_DEFINITIONS: Tool[] = [
+const TOOLS: Tool[] = [
   {
     name: "render_ItemsList",
     description: "Render a item list: the items can be from any entity.",
@@ -146,7 +146,7 @@ const App: React.FC = () => {
       console.log('Agent state before run:', agent.state);
 
       const result = await agent.runAgent({
-        tools: TOOL_DEFINITIONS
+        tools: TOOLS
       }, {
         onTextMessageStartEvent: (params: { event: TextMessageStartEvent }) => {
           const newMessage: UIMessage = {
