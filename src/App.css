@@ -116,6 +116,30 @@
   border: 1px solid #e9ecef;
 }
 
+.new-thread-button {
+  background: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.2rem;
+  font-weight: bold;
+  transition: background-color 0.2s ease;
+}
+
+.new-thread-button:hover {
+  background: #5a6268;
+}
+
+.new-thread-button:active {
+  transform: scale(0.95);
+}
+
 .chat-header {
   display: flex;
   justify-content: space-between;

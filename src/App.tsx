@@ -61,16 +61,20 @@ const App: React.FC = () => {
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
-    createAgent(agentUrl);
-  }, [agentUrl]);
-
-  const createAgent = (url: string) => {
-    const agent = new HttpAgent({
-      url,
-      initialState: {
+    const agent = createAgent({
+      url: agentUrl,
+      state: {
         user_id: "user-123",
         user_name: "Joe Doe"
-      },
+      }
+    });
+    setAgent(agent);
+  }, [agentUrl]);
+
+  const createAgent = ({url, state} : {url: string, state: object}) => {
+    const agent = new HttpAgent({
+      url,
+      initialState: state,
       initialMessages: [
         {
           id: `system-${Date.now()}`,
@@ -90,7 +94,7 @@ const App: React.FC = () => {
       ]
     })
     console.log('Current thread id: ', agent.threadId)
-    setAgent(agent);
+    return agent;
   };
 
   useEffect(() => {
@@ -273,6 +277,14 @@ const App: React.FC = () => {
     }
   };
 
+  const createNewThread = () => {
+    setMessages([]);
+    setInputValue('');
+    setIsLoading(false);
+    const newAgent = createAgent({url: agentUrl, state: agent?.state || {}});
+    setAgent(newAgent);
+  };
+
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -325,6 +337,13 @@ const App: React.FC = () => {
               <span className="thread-label">Thread ID:</span>
               <span className="thread-id">{agent?.threadId || 'Not specified'}</span>
             </div>
+            <button 
+              className="new-thread-button"
+              onClick={createNewThread}
+              title="Create new thread"
+            >
+              +
+            </button>
           </div>
           <div className="chat-messages">
             {messages.map((message) => (
