@@ -6,6 +6,7 @@ import type {
   TextMessageStartEvent,
   TextMessageContentEvent,
   TextMessageEndEvent,
+  StateSnapshotEvent,
   ToolCallStartEvent,
   ToolCallArgsEvent,
   ToolCallEndEvent,
@@ -31,14 +32,15 @@ interface UIMessage {
 const TOOL_DEFINITIONS: Tool[] = [
   {
     name: "render_ItemsList",
-    description: "Render a item list",
+    description: "Render a item list: the items can be from any entity.",
     parameters: {
       type: "object",
       properties: {
         items: {
           type: "array",
           items: {
-            type: "string"
+            type: "string",
+            description: "The name of an item to display in the list."
           }
         }
       },
@@ -53,10 +55,16 @@ const App: React.FC = () => {
   const [messages, setMessages] = useState<UIMessage[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [stateTextarea, setStateTextarea] = useState('');
+  
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    createAgent(agentUrl);
+  }, [agentUrl]);
+
   const createAgent = (url: string) => {
-    const httpAgent = new HttpAgent({
+    setAgent(new HttpAgent({
       url,
       initialState: {
         user_id: "user-123",
@@ -71,48 +79,55 @@ const App: React.FC = () => {
             You must ensure that the user has the most visual experience possible, utilizing the available rendering tools.
 
             Before call an render tool, always send a text message to inform the user about the data that will be presented visually.
-            Always present items available names using the render_ItemsList rendering tool.
-            Example: "Here are the available items: " => calls the tool render_ItemsList.
-            After the user selects an item, respond appropriately based on description of the selected item.
+            Always present items names using the render_ItemsList rendering tool.
+            Example: "Here are the items: " => calls the tool render_ItemsList.
+            After the user selects an item, respond appropriately based on data of the selected item.
+
+            Items can be of any entity, such as products, articles, locations, broadcasts etc.
           `
         } as SystemMessage
       ]
-    });
-
-    setAgent(httpAgent);
+    }));
   };
-
-  useEffect(() => {
-    createAgent(agentUrl);
-  }, [agentUrl]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  const sendMessage = async (messageText?: string) => {
-    const textToSend = messageText || inputValue;
-    if (!textToSend.trim() || !agent || isLoading) return;
+  useEffect(() => {
+    if (agent) setStateTextarea(JSON.stringify(agent.state, null, 2));
+  }, [agent]);
+
+  const updateAgentState = () => {
+    if (!agent) return;
+    
+    try {
+      const newState = JSON.parse(stateTextarea);
+      agent.state = newState;
+      console.log('Agent state updated:', agent.state);
+    } catch (error) {
+      console.error('Error parsing JSON state:', error);
+    }
+  };
+
+  const sendMessage = async (messageText: string) => {
+    if (!messageText.trim() || !agent || isLoading) return;
 
     const userMessage: UIMessage = {
       id: `user-${Date.now()}`,
-      text: textToSend,
+      text: messageText,
       sender: 'user',
       timestamp: new Date()
     };
 
     setMessages(prev => [...prev, userMessage]);
     setIsLoading(true);
-    const currentInput = textToSend;
-    if (!messageText) {
-      setInputValue('');
-    }   
 
     try {      
       const userMessage: UserMessage = {
         id: `user-${Date.now()}`,
         role: 'user',
-        content: currentInput
+        content: messageText
       };
       agent.addMessage(userMessage);
 
@@ -151,13 +166,17 @@ const App: React.FC = () => {
           console.log('Tool call args:', params.event);
         },
 
+        onStateSnapshotEvent: (params: { event: StateSnapshotEvent }) => {
+          console.log('Agent state changed:', params.event);
+          setStateTextarea(JSON.stringify(params.event.snapshot, null, 2));
+        },
+
         onToolCallEndEvent: (params: { event: ToolCallEndEvent; toolCallName: string; toolCallArgs: any; messages: any[]; }): AgentStateMutation | void => {
           console.log('Tool call ended:', params.event, params.toolCallArgs, params.toolCallName);
           const {toolCallName, toolCallArgs, event: { toolCallId }} = params || {};
 
           if (toolCallName === 'render_ItemsList') {
             try {
-              // Create and add items visualization message
               const itemsMessage: UIMessage = {
                 id: 'items-' + toolCallId,
                 sender: 'agent',
@@ -168,7 +187,6 @@ const App: React.FC = () => {
 
               setMessages(prev => [...prev, itemsMessage]);
 
-              // Create tool result message
               const toolResult: ToolMessage = {
                 id: `tool-result-${Date.now()}`,
                 role: 'tool',
@@ -179,7 +197,6 @@ const App: React.FC = () => {
                 toolCallId
               };
               
-              // Return AgentStateMutation to add the tool result message to the conversation
               return {
                 messages: [...params.messages, toolResult]
               }; 
@@ -227,18 +244,17 @@ const App: React.FC = () => {
     }
   };
 
-  const sendItemMessage = (itemText: string) => {
-    sendMessage(itemText);
-  };
-
-  const handleSendClick = () => {
-    sendMessage();
+  const sendInputMessage = () => {
+    if (inputValue.trim()) {
+      sendMessage(inputValue);
+      setInputValue('');
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      sendMessage();
+      sendInputMessage();
     }
   };
 
@@ -247,7 +263,7 @@ const App: React.FC = () => {
       <div className="chat-header">
         <h1>AG-UI Chat Playground</h1>
         <div className="url-input-container">
-          <label htmlFor="agent-url">Agent URL:</label>
+          <label htmlFor="agent-url">AG-UI URL:</label>
           <input
             id="agent-url"
             type="text"
@@ -258,52 +274,78 @@ const App: React.FC = () => {
           />
         </div>
       </div>
-      <div className="chat-messages">
-        {messages.map((message) => (
-          <div key={message.id} className={`message ${message.sender}`}>
-            <div className="message-content">
-              {message.type === 'items' && message.items ? (
-                <ItemsList 
-                  items={message.items} 
-                  onItemClick={sendItemMessage}
-                />
-              ) : (
-                message.text
-              )}
-            </div>
-            <div className="message-time">
-              {message.timestamp.toLocaleTimeString()}
-            </div>
+      <div className="main-content">
+        <div className="sidebar">
+          <div className="sidebar-section">
+            <label htmlFor="agent-state" className="sidebar-label">
+              Agent State:
+            </label>
+            <textarea
+              id="agent-state"
+              value={stateTextarea}
+              onChange={(e) => setStateTextarea(e.target.value)}
+              placeholder='{}'
+              className="json-input"
+              rows={10}
+            />
+            <button 
+              onClick={updateAgentState} 
+              className="update-state-btn"
+              disabled={!agent}
+            >
+              Update State
+            </button>
           </div>
-        ))}
-        {isLoading && (
-          <div className="message agent">
-            <div className="message-content loading">
-              <div className="typing-indicator">
-                <span></span>
-                <span></span>
-                <span></span>
+        </div>
+        <div className="chat-container">
+          <div className="chat-messages">
+            {messages.map((message) => (
+              <div key={message.id} className={`message ${message.sender}`}>
+                <div className="message-content">
+                  {message.type === 'items' && message.items ? (
+                    <ItemsList
+                      items={message.items}
+                      onItemClick={(itemText) => sendMessage(itemText)}
+                    />
+                  ) : (
+                    message.text
+                  )}
+                </div>
+                <div className="message-time">
+                  {message.timestamp.toLocaleTimeString()}
+                </div>
               </div>
-            </div>
+            ))}
+            {isLoading && (
+              <div className="message agent">
+                <div className="message-content loading">
+                  <div className="typing-indicator">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </div>
+                </div>
+              </div>
+            )}
+            <div ref={messagesEndRef} />
           </div>
-        )}
-        <div ref={messagesEndRef} />
-      </div>
-      <div className="chat-input">
-        <textarea
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          onKeyUp={handleKeyPress}
-          placeholder="Type your message..."
-          disabled={isLoading}
-          rows={1}
-        />
-        <button 
-          onClick={handleSendClick} 
-          disabled={!inputValue.trim() || isLoading}
-        >
-          Send
-        </button>
+          <div className="chat-input">
+            <textarea
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyUp={handleKeyPress}
+              placeholder="Type your message..."
+              disabled={isLoading}
+              rows={1}
+            />
+            <button 
+              onClick={sendInputMessage} 
+              disabled={!inputValue.trim() || isLoading}
+            >
+              Send
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

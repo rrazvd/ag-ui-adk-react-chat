@@ -2,10 +2,84 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
-  max-width: 800px;
+  max-width: 1200px;
   margin: 0 auto;
   background: white;
   border: 1px solid #ddd;
+}
+
+.main-content {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+.sidebar {
+  width: 300px;
+  background: #f8f9fa;
+  border-right: 1px solid #ddd;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+.sidebar-section {
+  margin-bottom: 1.5rem;
+}
+
+.sidebar-label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.json-input {
+  width: 100%;
+  min-height: 200px;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  resize: vertical;
+  outline: none;
+  background: white;
+}
+
+.json-input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.update-state-btn {
+  margin-top: 0.75rem;
+  padding: 0.5rem 1rem;
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.update-state-btn:hover:not(:disabled) {
+  background: #218838;
+}
+
+.update-state-btn:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+}
+
+.chat-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
 }
 
 .chat-header {
@@ -191,6 +265,22 @@
   .app {
     height: 100vh;
     border: none;
+    max-width: 100%;
+  }
+  
+  .main-content {
+    flex-direction: column;
+  }
+  
+  .sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid #ddd;
+    max-height: 200px;
+  }
+  
+  .json-input {
+    min-height: 100px;
   }
   
   .message {
