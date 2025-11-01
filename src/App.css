@@ -231,6 +231,8 @@
   border-radius: 18px;
   word-wrap: break-word;
   white-space: pre-wrap;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .message.user .message-content {

@@ -2,6 +2,8 @@
   margin: 12px 0;
   padding: 8px;
   border-radius: 8px;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .items-title {
