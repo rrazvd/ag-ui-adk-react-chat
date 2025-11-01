@@ -1,7 +1,8 @@
-# AG-UI ADK React Chat
+# AG-UI ADK React Chat Playground
 
-A simple AG-UI ADK React Chat to explore and understand the technology. 
+A simple AG-UI ADK React Chat playground to explore and understand the technology. 
 
+![Playground Screenshot](screenshot.png)
 ## 🚀 Get started
 
 ### 1. Install dependencies
@@ -26,4 +27,4 @@ npm run dev
 
 > AG-UI ADK Server will be available on http://localhost:3001/ag-ui via proxy
 
-> AG-UI React chat will be available on http://localhost:3005
+> AG-UI ADK React chat playground will be available on http://localhost:3005
