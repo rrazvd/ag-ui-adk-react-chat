@@ -216,7 +216,7 @@ const App: React.FC = () => {
                 id: `tool-error-${Date.now()}`,
                 role: 'tool',
                 content: JSON.stringify({
-                  status: 'error',
+                  result: 'error',
                   message: 'Failed to render items list.',
                   error: error instanceof Error ? error.message : 'Unknown error'
                 }),
@@ -270,11 +270,7 @@ const App: React.FC = () => {
   };
 
   const handleButtonClick = () => {
-    if (isLoading) {
-      handleAbortRun();
-    } else {
-      sendInputMessage();
-    }
+    isLoading ? handleAbortRun() : sendInputMessage();
   };
 
   const createNewThread = () => {
