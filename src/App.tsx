@@ -69,7 +69,7 @@ const App: React.FC = () => {
       }
     });
     setAgent(agent);
-  }, [agentUrl]);
+  }, []);
 
   const createAgent = ({url, state} : {url: string, state: object}) => {
     const agent = new HttpAgent({
@@ -306,6 +306,13 @@ const App: React.FC = () => {
             placeholder="http://localhost:3001/ag-ui"
             className="url-input"
           />
+          <button 
+            className="connect-button"
+            onClick={createNewThread}
+            title="Connect and create new thread"
+          >
+            Connect
+          </button>
         </div>
       </div>
       <div className="main-content">
