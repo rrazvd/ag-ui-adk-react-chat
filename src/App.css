@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
-  max-width: 1200px;
+  max-width: 1700px;
   margin: 0 auto;
   background: white;
   border: 1px solid #ddd;
@@ -15,7 +15,7 @@
 }
 
 .sidebar {
-  width: 300px;
+  width: 500px;
   background: #f8f9fa;
   border-right: 1px solid #ddd;
   padding: 1rem;
@@ -46,6 +46,9 @@
   resize: vertical;
   outline: none;
   background: white;
+  white-space: nowrap;
+  overflow-x: auto;
+  word-wrap: normal;
 }
 
 .json-input:focus {
