@@ -258,6 +258,21 @@ const App: React.FC = () => {
     }
   };
 
+  const handleAbortRun = () => {
+    if (agent && isLoading) {
+      agent.abortRun();
+      setIsLoading(false);
+    }
+  };
+
+  const handleButtonClick = () => {
+    if (isLoading) {
+      handleAbortRun();
+    } else {
+      sendInputMessage();
+    }
+  };
+
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -353,10 +368,18 @@ const App: React.FC = () => {
               rows={1}
             />
             <button 
-              onClick={sendInputMessage} 
-              disabled={!inputValue.trim() || isLoading}
+              onClick={handleButtonClick} 
+              disabled={!isLoading && !inputValue.trim()}
+              className={isLoading ? 'stop-button' : 'send-button'}
             >
-              Send
+              {isLoading ? (
+                <>
+                  <span className="stop-icon">⏹</span>
+                  Stop
+                </>
+              ) : (
+                'Send'
+              )}
             </button>
           </div>
         </div>

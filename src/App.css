@@ -295,6 +295,19 @@
   cursor: not-allowed;
 }
 
+.stop-button {
+  background: #dc3545 !important;
+}
+
+.stop-button:hover:not(:disabled) {
+  background: #c82333 !important;
+}
+
+.stop-icon {
+  margin-right: 0.5rem;
+  font-size: 0.9rem;
+}
+
 @media (max-width: 768px) {
   .app {
     height: 100vh;
