@@ -65,7 +65,7 @@ const App: React.FC = () => {
   }, [agentUrl]);
 
   const createAgent = (url: string) => {
-    setAgent(new HttpAgent({
+    const agent = new HttpAgent({
       url,
       initialState: {
         user_id: "user-123",
@@ -88,7 +88,9 @@ const App: React.FC = () => {
           `
         } as SystemMessage
       ]
-    }));
+    })
+    console.log('Current thread id: ', agent.threadId)
+    setAgent(agent);
   };
 
   useEffect(() => {
@@ -303,6 +305,12 @@ const App: React.FC = () => {
           </div>
         </div>
         <div className="chat-container">
+          <div className="chat-header-inner">
+            <div className="thread-info">
+              <span className="thread-label">Thread ID:</span>
+              <span className="thread-id">{agent?.threadId || 'Not specified'}</span>
+            </div>
+          </div>
           <div className="chat-messages">
             {messages.map((message) => (
               <div key={message.id} className={`message ${message.sender}`}>
