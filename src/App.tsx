@@ -58,6 +58,7 @@ const App: React.FC = () => {
   const [stateTextarea, setStateTextarea] = useState('');
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     createAgent(agentUrl);
@@ -97,6 +98,10 @@ const App: React.FC = () => {
   useEffect(() => {
     if (agent) setStateTextarea(JSON.stringify(agent.state, null, 2));
   }, [agent]);
+
+  useEffect(() => {
+    if (!isLoading) inputRef.current?.focus();
+  }, [isLoading])
 
   const updateAgentState = () => {
     if (!agent) return;
@@ -331,6 +336,7 @@ const App: React.FC = () => {
           </div>
           <div className="chat-input">
             <textarea
+              ref={inputRef}
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyUp={handleKeyPress}
