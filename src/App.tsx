@@ -295,7 +295,7 @@ const App: React.FC = () => {
   return (
     <div className="app">
       <div className="chat-header">
-        <h1>AG-UI Chat Playground</h1>
+        <h1>AG-UI ADK Chat Playground</h1>
         <div className="url-input-container">
           <label htmlFor="agent-url">AG-UI URL:</label>
           <input
