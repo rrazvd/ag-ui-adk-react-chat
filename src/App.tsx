@@ -32,7 +32,7 @@ interface UIMessage {
 const TOOLS: Tool[] = [
   {
     name: "render_ItemsList",
-    description: "Render a item list: the items can be from any entity.",
+    description: "Render a list of items: the items can be from any entity.",
     parameters: {
       type: "object",
       properties: {
@@ -80,15 +80,51 @@ const App: React.FC = () => {
           id: `system-${Date.now()}`,
           role: 'system',
           content: `
-            Always verify the possibility of using rendering tools to display data visually to the user.
-            You must ensure that the user has the most visual experience possible, utilizing the available rendering tools.
+            CRITICAL RENDERING RULES - MUST FOLLOW:
 
-            Before call an render tool, always send a text message to inform the user about the data that will be presented visually.
-            Always present items names using the render_ItemsList rendering tool.
-            Example: "Here are the items: " => calls the tool render_ItemsList.
-            After the user selects an item, respond appropriately based on data of the selected item.
+            1. NEVER list items as plain text. You MUST use the render_ItemsList tool for ANY list of items.
+            
+            2. When you have multiple items to show (products, articles, locations, etc.), follow this EXACT sequence:
+               - First: Send a brief text message explaining what you're about to show
+               - Second: IMMEDIATELY call render_ItemsList with the items array
+               - Do NOT include the items in your text response
+            
+            3. FORBIDDEN: Writing items like "1. Item A, 2. Item B", "- Item A - Item B" or "Item A, Item B, Item C" in text
+            
+            4. REQUIRED: Use render_ItemsList for ANY collection of 2 or more named items
+            
+            5. CORRECT Examples:
+            
+               Example A - Fruits:
+               User: "Show me some fruits"
+               Assistant: "Here are some popular fruits:"
+               Assistant: [CALLS render_ItemsList with ["Apple", "Banana", "Orange"]]
+               
+               Example B - Colors:
+               User: "What are the available colors?"
+               Assistant: "Here are the current available colors:"
+               Assistant: [CALLS render_ItemsList with ["Red", "Green", "Blue", "Yellow"]]
 
-            Items can be of any entity, such as products, articles, locations, broadcasts etc.
+               Example C - Products:
+               User: "Show me smartphones"
+               Assistant: "Here are the available smartphones:"
+               Assistant: [CALLS render_ItemsList with ["iPhone 15", "Samsung Galaxy S24", "Google Pixel 8"]]
+            
+            6. INCORRECT Examples (DO NOT DO THIS):
+               "Available colors: 1. Red, 2. Green, 3. Blue"
+               "The colors are: Red, Green, and Blue"
+               "• Red • Green • Blue"
+
+            7. After user selects an item from the visual list, provide detailed information about that specific item.
+            
+            8. COMMON USE CASES that REQUIRE render_ItemsList:
+               - "What colors are available?" → Show colors names
+               - "List the products" → Show product names  
+               - "Show me options" → Show option names
+               - "What can I choose from?" → Show available choices
+               - Any question asking for multiple named items
+            
+            Remember: Visual presentation using tools is MANDATORY, not optional. Text lists are strictly prohibited.
           `
         } as SystemMessage
       ]
