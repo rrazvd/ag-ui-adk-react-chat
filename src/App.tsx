@@ -32,7 +32,7 @@ interface UIMessage {
 const TOOLS: Tool[] = [
   {
     name: "render_ItemsList",
-    description: "Render a list of items: the items can be from any entity.",
+    description: "Renders a visual, interactive list of items in a horizontal scrollable carousel format. Use this tool to display any collection of named items such as products, locations, categories, options, or any other entities that the user can select from. This tool creates a better user experience than displaying items as plain text.",
     parameters: {
       type: "object",
       properties: {
@@ -40,8 +40,10 @@ const TOOLS: Tool[] = [
           type: "array",
           items: {
             type: "string",
-            description: "The name of an item to display in the list."
-          }
+            description: "The display name of each item in the list. Each string should be a clear, user-friendly name that represents a selectable option."
+          },
+          description: "An array of item names to be displayed in the visual list. Must contain at least 2 items. Each item will be rendered as a clickable element that users can interact with to make selections.",
+          minItems: 2
         }
       },
       required: ["items"]
