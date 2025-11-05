@@ -21,6 +21,64 @@ import ItemsList from './ItemsList';
 import './App.css';
 
 const AG_UI_URL = "http://localhost:8000/ag-ui";
+
+const INITIAL_STATE = {
+  user_id: "user-123",
+  user_name: "Joe Doe"
+}
+
+const SYSTEM_MESSAGE: SystemMessage = {
+  id: `system-${Date.now()}`,
+  role: 'system',
+  content: `
+    CRITICAL RENDERING RULES - MUST FOLLOW:
+
+    1. NEVER list items as plain text. You MUST use the render_ItemsList tool for ANY list of items.
+
+    2. When you have multiple items to show (products, articles, locations, etc.), follow this EXACT sequence:
+       - First: Send a brief text message explaining what you're about to show
+       - Second: IMMEDIATELY call render_ItemsList with the items array
+       - Do NOT include the items in your text response
+
+    3. FORBIDDEN: Writing items like "1. Item A, 2. Item B", "- Item A - Item B" or "Item A, Item B, Item C" in text
+
+    4. REQUIRED: Use render_ItemsList for ANY collection of 2 or more named items
+
+    5. CORRECT Examples:
+
+       Example A - Fruits:
+       User: "Show me some fruits"
+       Assistant: "Here are some popular fruits:"
+       Assistant: [CALLS render_ItemsList with ["Apple", "Banana", "Orange"]]
+
+       Example B - Colors:
+       User: "What are the available colors?"
+       Assistant: "Here are the current available colors:"
+       Assistant: [CALLS render_ItemsList with ["Red", "Green", "Blue", "Yellow"]]
+
+       Example C - Products:
+       User: "Show me smartphones"
+       Assistant: "Here are the available smartphones:"
+       Assistant: [CALLS render_ItemsList with ["iPhone 15", "Samsung Galaxy S24", "Google Pixel 8"]]
+
+    6. INCORRECT Examples (DO NOT DO THIS):
+       "Available colors: 1. Red, 2. Green, 3. Blue"
+       "The colors are: Red, Green, and Blue"
+       "• Red • Green • Blue"
+
+    7. After user selects an item from the visual list, provide detailed information about that specific item.
+
+    8. COMMON USE CASES that REQUIRE render_ItemsList:
+       - "What colors are available?" → Show colors names
+       - "List the products" → Show product names
+       - "Show me options" → Show option names
+       - "What can I choose from?" → Show available choices
+       - Any question asking for multiple named items
+
+    Remember: Visual presentation using tools is MANDATORY, not optional. Text lists are strictly prohibited.
+  `
+}
+
 interface UIMessage {
   id: string;
   text?: string;
@@ -66,10 +124,7 @@ const App: React.FC = () => {
   useEffect(() => {
     const agent = createAgent({
       url: agentUrl,
-      state: {
-        user_id: "user-123",
-        user_name: "Joe Doe"
-      }
+      state: INITIAL_STATE
     });
     setAgent(agent);
   }, []);
@@ -78,59 +133,7 @@ const App: React.FC = () => {
     const agent = new HttpAgent({
       url,
       initialState: state,
-      initialMessages: [
-        {
-          id: `system-${Date.now()}`,
-          role: 'system',
-          content: `
-            CRITICAL RENDERING RULES - MUST FOLLOW:
-
-            1. NEVER list items as plain text. You MUST use the render_ItemsList tool for ANY list of items.
-            
-            2. When you have multiple items to show (products, articles, locations, etc.), follow this EXACT sequence:
-               - First: Send a brief text message explaining what you're about to show
-               - Second: IMMEDIATELY call render_ItemsList with the items array
-               - Do NOT include the items in your text response
-            
-            3. FORBIDDEN: Writing items like "1. Item A, 2. Item B", "- Item A - Item B" or "Item A, Item B, Item C" in text
-            
-            4. REQUIRED: Use render_ItemsList for ANY collection of 2 or more named items
-            
-            5. CORRECT Examples:
-            
-               Example A - Fruits:
-               User: "Show me some fruits"
-               Assistant: "Here are some popular fruits:"
-               Assistant: [CALLS render_ItemsList with ["Apple", "Banana", "Orange"]]
-               
-               Example B - Colors:
-               User: "What are the available colors?"
-               Assistant: "Here are the current available colors:"
-               Assistant: [CALLS render_ItemsList with ["Red", "Green", "Blue", "Yellow"]]
-
-               Example C - Products:
-               User: "Show me smartphones"
-               Assistant: "Here are the available smartphones:"
-               Assistant: [CALLS render_ItemsList with ["iPhone 15", "Samsung Galaxy S24", "Google Pixel 8"]]
-            
-            6. INCORRECT Examples (DO NOT DO THIS):
-               "Available colors: 1. Red, 2. Green, 3. Blue"
-               "The colors are: Red, Green, and Blue"
-               "• Red • Green • Blue"
-
-            7. After user selects an item from the visual list, provide detailed information about that specific item.
-            
-            8. COMMON USE CASES that REQUIRE render_ItemsList:
-               - "What colors are available?" → Show colors names
-               - "List the products" → Show product names  
-               - "Show me options" → Show option names
-               - "What can I choose from?" → Show available choices
-               - Any question asking for multiple named items
-            
-            Remember: Visual presentation using tools is MANDATORY, not optional. Text lists are strictly prohibited.
-          `
-        } as SystemMessage
-      ]
+      initialMessages: [SYSTEM_MESSAGE]
     })
     console.log('Current thread id: ', agent.threadId)
     return agent;
@@ -174,15 +177,16 @@ const App: React.FC = () => {
     setIsLoading(true);
 
     try {      
-      const userMessage: UserMessage = {
+      agent.addMessage({
         id: `user-${Date.now()}`,
         role: 'user',
         content: messageText
-      };
-      agent.addMessage(userMessage);
+      } as UserMessage);
 
       console.log('Agent messages before run:', agent.messages);
       console.log('Agent state before run:', agent.state);
+
+      const beforeRunStateSnapshot = agent.state;
 
       const result = await agent.runAgent({
         tools: TOOLS
@@ -218,7 +222,8 @@ const App: React.FC = () => {
 
         onStateSnapshotEvent: (params: { event: StateSnapshotEvent }) => {
           console.log('Agent state changed:', params.event);
-          setStateTextarea(JSON.stringify(params.event.snapshot, null, 2));
+          // setStateTextarea(JSON.stringify(params.event.snapshot, null, 2));
+          // commented due the issue: https://github.com/ag-ui-protocol/ag-ui/issues/624
         },
 
         onToolCallEndEvent: (params: { event: ToolCallEndEvent; toolCallName: string; toolCallArgs: any; messages: any[]; }): AgentStateMutation | void => {
@@ -285,9 +290,11 @@ const App: React.FC = () => {
       });
 
       console.log('Agent run result:', result);
-
       console.log('Agent messages after run:', agent.messages);
       console.log('Agent state after run:', agent.state);
+
+      agent.state = beforeRunStateSnapshot; // workaround to issue https://github.com/ag-ui-protocol/ag-ui/issues/624
+      agent.messages = [SYSTEM_MESSAGE] // workaround to issue: https://github.com/ag-ui-protocol/ag-ui/issues/643
     } catch (error) {
       console.error('Error in sendMessage:', error);
       setIsLoading(false);
