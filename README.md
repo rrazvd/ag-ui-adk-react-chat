@@ -25,6 +25,6 @@ export GOOGLE_API_KEY="your-google-api-key-here"
 npm run dev
 ```
 
-> AG-UI ADK Server will be available on http://localhost:3001/ag-ui via proxy
+> AG-UI ADK Server will be available on http://localhost:8000/ag-ui
 
 > AG-UI ADK React chat playground will be available on http://localhost:3005

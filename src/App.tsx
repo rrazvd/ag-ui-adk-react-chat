@@ -20,6 +20,7 @@ import ItemsList from './ItemsList';
 
 import './App.css';
 
+const AG_UI_URL = "http://localhost:8000/ag-ui";
 interface UIMessage {
   id: string;
   text?: string;
@@ -52,7 +53,7 @@ const TOOLS: Tool[] = [
 ];
 
 const App: React.FC = () => {
-  const [agentUrl, setAgentUrl] = useState('http://localhost:3001/ag-ui');
+  const [agentUrl, setAgentUrl] = useState(AG_UI_URL);
   const [agent, setAgent] = useState<HttpAgent | null>(null);
   const [messages, setMessages] = useState<UIMessage[]>([]);
   const [inputValue, setInputValue] = useState('');
@@ -337,7 +338,7 @@ const App: React.FC = () => {
             type="text"
             value={agentUrl}
             onChange={(e) => setAgentUrl(e.target.value)}
-            placeholder="http://localhost:3001/ag-ui"
+            placeholder={AG_UI_URL}
             className="header__input"
           />
           <button 

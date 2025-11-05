@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from google.adk.agents import Agent
 from google.adk.cli.fast_api import get_fast_api_app
@@ -58,6 +59,14 @@ app: FastAPI = get_fast_api_app(
     agents_dir="../",
     session_service_uri=DATABASE_SERVICE_URI,
     web=True,
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3005"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Add the ADK endpoint
