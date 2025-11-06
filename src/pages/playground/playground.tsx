@@ -181,6 +181,10 @@ export const Playground: React.FC = () => {
       console.log('Agent messages before run:', agent.messages);
       console.log('Agent state before run:', agent.state);
 
+      if (Object.keys(agent.state).includes('user_current_time')){
+        agent.state['user_current_time'] = new Date().toString();
+      }
+
       const result = await agent.runAgent({
         tools: TOOLS
       }, {
