@@ -1,6 +1,6 @@
 const {
   VITE_AG_UI_URL = "http://localhost:8000/ag-ui",
-  VITE_INITIAL_STATE = '{"user_id":"user-123","user_name":"Joe Doe"}'
+  VITE_INITIAL_STATE = '{"user_id":"user-123","user_name":"John Doe"}'
 } = import.meta.env;
 
 let parsedInitialState
