@@ -1,13 +1,13 @@
 import React from 'react';
 
-import './ItemsList.css';
+import './items-list.css';
 
 interface ItemsListProps {
   items: string[];
   onItemClick?: (item: string) => void;
 }
 
-const ItemsList: React.FC<ItemsListProps> = ({ items, onItemClick }) => {
+export const ItemsList: React.FC<ItemsListProps> = ({ items, onItemClick }) => {
   const handleItemClick = (item: string) => {
     if (onItemClick) {
       onItemClick(item);
@@ -30,5 +30,3 @@ const ItemsList: React.FC<ItemsListProps> = ({ items, onItemClick }) => {
     </div>
   );
 };
-
-export default ItemsList;

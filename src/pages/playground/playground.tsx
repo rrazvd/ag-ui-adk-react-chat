@@ -16,9 +16,9 @@ import type {
   Tool
 } from '@ag-ui/core';
 
-import ItemsList from './ItemsList';
+import { ItemsList } from '../../components';
 
-import './App.css';
+import './playground.css';
 
 const AG_UI_URL = "http://localhost:8000/ag-ui";
 
@@ -110,7 +110,7 @@ interface UIMessage {
   items?: string[];
 }
 
-const App: React.FC = () => {
+export const Playground: React.FC = () => {
   const [agentUrl, setAgentUrl] = useState(AG_UI_URL);
   const [agent, setAgent] = useState<HttpAgent | null>(null);
   const [messages, setMessages] = useState<UIMessage[]>([]);
@@ -329,7 +329,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="app">
+    <div className="playground">
       <div className="header">
         <h1 className="header__title">AG-UI ADK Chat Playground</h1>
         <div className="header__url-input">
@@ -351,7 +351,7 @@ const App: React.FC = () => {
           </button>
         </div>
       </div>
-      <div className="app__content">
+      <div className="playground__content">
         <div className="sidebar">
           <div className="sidebar__section">
             <label htmlFor="agent-state" className="sidebar__label">
@@ -450,5 +450,3 @@ const App: React.FC = () => {
     </div>
   );
 };
-
-export default App;

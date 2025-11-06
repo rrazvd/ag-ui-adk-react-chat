@@ -1,5 +1,4 @@
-/* App Block */
-.app {
+.playground {
   display: flex;
   flex-direction: column;
   height: 100vh;
@@ -9,13 +8,12 @@
   border: 1px solid #ddd;
 }
 
-.app__content {
+.playground__content {
   display: flex;
   flex: 1;
   min-height: 0;
 }
 
-/* Header Block */
 .header {
   display: flex;
   justify-content: space-between;
@@ -77,7 +75,6 @@
   transform: scale(0.98);
 }
 
-/* Sidebar Block */
 .sidebar {
   width: 500px;
   background: #f8f9fa;
@@ -367,13 +364,13 @@
 
 /* Media Queries */
 @media (max-width: 768px) {
-  .app {
+  .playground {
     height: 100vh;
     border: none;
     max-width: 100%;
   }
   
-  .app__content {
+  .playground__content {
     flex-direction: column;
   }
   
