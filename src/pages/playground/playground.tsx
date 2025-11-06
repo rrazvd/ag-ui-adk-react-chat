@@ -18,14 +18,9 @@ import type {
 
 import { ItemsList } from '../../components';
 
+import { AG_UI_URL, AGENT_INITIAL_STATE } from '../../settings';
+
 import './playground.css';
-
-const AG_UI_URL = "http://localhost:8000/ag-ui";
-
-const INITIAL_STATE = {
-  user_id: "user-123",
-  user_name: "Joe Doe"
-}
 
 const SYSTEM_MESSAGE: SystemMessage = {
   id: `system-${Date.now()}`,
@@ -124,7 +119,7 @@ export const Playground: React.FC = () => {
   useEffect(() => {
     const agent = createAgent({
       url: agentUrl,
-      state: INITIAL_STATE
+      state: AGENT_INITIAL_STATE
     });
     setAgent(agent);
   }, []);
