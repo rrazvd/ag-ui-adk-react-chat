@@ -144,12 +144,12 @@ export const Playground: React.FC = () => {
   }, [messages]);
 
   useEffect(() => {
-    if (agent) setStateTextarea(JSON.stringify(agent.state, null, 2));
-  }, [agent]);
-
-  useEffect(() => {
     if (!isLoading) inputRef.current?.focus();
   }, [isLoading])
+
+  useEffect(() => {
+    if (agent) setStateTextarea(JSON.stringify(agent.state, null, 2));
+  }, [agent]);
 
   const updateAgentState = () => {
     if (!agent) return;
