@@ -29,6 +29,7 @@ npm run dev
 ```
 
 > AG-UI ADK Server will be available on http://localhost:8000/ag-ui
+
 > AG-UI ADK React chat playground will be available on http://localhost:3005
 
 #### Option 2: Run playground interface only
