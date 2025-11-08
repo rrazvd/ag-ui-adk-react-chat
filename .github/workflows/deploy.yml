@@ -27,6 +27,9 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+    env:
+      VITE_AG_UI_URL: ""
+      VITE_INITIAL_STATE: ""
     steps:
       - name: Checkout
         uses: actions/checkout@v5
