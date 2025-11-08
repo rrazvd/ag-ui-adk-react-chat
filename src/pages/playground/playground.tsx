@@ -19,6 +19,7 @@ import type {
 import { ItemsList } from '../../components';
 
 import { AG_UI_URL, AGENT_INITIAL_STATE } from '../../settings';
+import { getQueryParam, updateUrlQueryParam, parseJsonQueryParam } from '../../utils';
 
 import './playground.css';
 
@@ -106,7 +107,17 @@ interface UIMessage {
 }
 
 export const Playground: React.FC = () => {
-  const [agentUrl, setAgentUrl] = useState(AG_UI_URL);
+  const initialQueryParams = {
+    target: getQueryParam('target'),
+    state: getQueryParam('state'),
+    thread: getQueryParam('thread')
+  };
+  
+  const initialAgentUrl = initialQueryParams.target || AG_UI_URL;
+  const initialAgentState = parseJsonQueryParam(initialQueryParams.state, AGENT_INITIAL_STATE);
+  const initialThreadId = initialQueryParams.thread;
+  
+  const [agentUrl, setAgentUrl] = useState(initialAgentUrl);
   const [agent, setAgent] = useState<HttpAgent | null>(null);
   const [messages, setMessages] = useState<UIMessage[]>([]);
   const [inputValue, setInputValue] = useState('');
@@ -121,14 +132,20 @@ export const Playground: React.FC = () => {
     
     const agent = createAgent({
       url: agentUrl,
-      state: AGENT_INITIAL_STATE
+      state: initialAgentState,
+      threadId: initialThreadId || undefined
     });
     setAgent(agent);
+
+    updateUrlQueryParam('target', initialAgentUrl, !!initialQueryParams.target);
+    updateUrlQueryParam('state', JSON.stringify(initialAgentState), !!initialQueryParams.state);
+    updateThreadIdUrl(agent.threadId);
   }, []);
 
-  const createAgent = ({url, state} : {url: string, state: object}) => {
+  const createAgent = ({url, state, threadId} : {url: string, state: object, threadId?: string}) => {
     const agent = new HttpAgent({
       url,
+      threadId,
       initialState: state,
       initialMessages: [SYSTEM_MESSAGE]
     })
@@ -148,12 +165,22 @@ export const Playground: React.FC = () => {
     if (agent) setStateTextarea(JSON.stringify(agent.state, null, 2));
   }, [agent]);
 
-  const updateAgentState = () => {
+  const updateAgentStateUrl = (stateValue: string) => {
+    const shouldPreserve = !!initialQueryParams.state || stateValue !== JSON.stringify(AGENT_INITIAL_STATE);
+    updateUrlQueryParam('state', stateValue, shouldPreserve);
+  };
+
+  const updateThreadIdUrl = (threadId: string) => {
+    updateUrlQueryParam('thread', threadId, true);
+  };
+
+  const onUpdateStateClick = () => {
     if (!agent) return;
     
     try {
       const newState = JSON.parse(stateTextarea);
       agent.state = newState;
+      updateAgentStateUrl(stateTextarea);
       console.log('Agent state updated:', agent.state);
     } catch (error) {
       console.error('Error parsing JSON state:', error);
@@ -304,15 +331,15 @@ export const Playground: React.FC = () => {
     }
   };
 
-  const handleAbortRun = () => {
+  const abortRun = () => {
     if (agent && isLoading) {
       agent.abortRun();
       setIsLoading(false);
     }
   };
 
-  const handleButtonClick = () => {
-    isLoading ? handleAbortRun() : sendInputMessage();
+  const onInputButtonClick = () => {
+    isLoading ? abortRun() : sendInputMessage();
   };
 
   const createNewThread = () => {
@@ -320,7 +347,18 @@ export const Playground: React.FC = () => {
     setInputValue('');
     setIsLoading(false);
     const newAgent = createAgent({url: agentUrl, state: agent?.state || {}});
+    updateThreadIdUrl(newAgent.threadId);
     setAgent(newAgent);
+  };
+
+  const onConnectClick = () => {
+    const shouldPreserve = !!initialQueryParams.target || agentUrl !== AG_UI_URL;
+    updateUrlQueryParam('target', agentUrl, shouldPreserve);
+    createNewThread();
+  };
+
+  const onNewThreadClick = () => {
+    createNewThread();
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -346,7 +384,7 @@ export const Playground: React.FC = () => {
           />
           <button 
             className="header__button"
-            onClick={createNewThread}
+            onClick={onConnectClick}
             title="Connect and create new thread"
           >
             Connect
@@ -368,7 +406,7 @@ export const Playground: React.FC = () => {
               rows={10}
             />
             <button 
-              onClick={updateAgentState} 
+              onClick={onUpdateStateClick} 
               className="sidebar__button"
               disabled={!agent}
             >
@@ -384,7 +422,7 @@ export const Playground: React.FC = () => {
             </div>
             <button 
               className="chat__new-thread-button"
-              onClick={createNewThread}
+              onClick={onNewThreadClick}
               title="Create new thread"
             >
               +
@@ -433,7 +471,7 @@ export const Playground: React.FC = () => {
               className="chat__textarea"
             />
             <button 
-              onClick={handleButtonClick} 
+              onClick={onInputButtonClick} 
               disabled={!isLoading && !inputValue.trim()}
               className={`chat__button ${isLoading ? 'chat__button--stop' : 'chat__button--send'}`}
             >

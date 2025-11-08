@@ -1,6 +1,8 @@
 # AG-UI ADK React Chat Playground
 
-A simple AG-UI ADK React Chat playground to explore, understand and test the technology. 
+A simple AG-UI ADK React Chat playground to explore, understand, test and debug AG-UI technology. This provides a controlled testing environment for experimenting with different configurations, troubleshooting issues, and validating agent behaviors.
+
+This project was developed with AI assistance as a learning and experimentation tool, focusing on rapid prototyping and technology exploration rather than production-ready code standards.
 
 ![Playground Screenshot](screenshot.png)
 
@@ -14,6 +16,7 @@ A simple AG-UI ADK React Chat playground to explore, understand and test the tec
 - **Custom Server URLs**: Connect to any AG-UI compatible server
 - **Environment Variables**: Configurable settings for different environments
 - **Initial State Setup**: Define custom initial agent states
+- **Query String Parameters**: Configure playground state via URL parameters for easy sharing and bookmarking
 - **Extensible API Layer**: Preserves all original ADK SDK routes while extending with AG-UI endpoint (`/ag-ui`)
 
 ### 🤖 Interactive AI Agent
@@ -62,7 +65,25 @@ VITE_AG_UI_URL="http://localhost:8000/ag-ui" VITE_INITIAL_STATE='{"user_id":"use
 
 Change `VITE_AG_UI_URL` to your AG-UI server and `VITE_INITIAL_STATE` to correspondent required state.
 
-## 🔧 Environment Variables
+## � Query String Parameters
+
+The playground supports URL query parameters for easy configuration sharing and bookmarking:
+
+### Available Parameters
+
+| Parameter | Description | Example |
+|-----------|-------------|---------|
+| `target` | AG-UI server URL | `?target=http://localhost:8000/ag-ui` |
+| `state` | Initial agent state (JSON) | `?state={"user_id":"user-123","user_name":"John Doe"}` |
+| `thread` | Specific thread ID to load | `?thread=abc123def456` |
+
+### 📝 Notes
+- Query parameters are automatically synchronized with the playground state
+- Parameters are preserved when present in the initial URL
+- JSON values in `state` parameter should be URL-encoded
+- All parameters are optional and will fallback to environment defaults
+
+## �🔧 Environment Variables
 
 | Variable | Description | Default | Required |
 |----------|-------------|---------|----------|
