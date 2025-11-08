@@ -117,6 +117,8 @@ export const Playground: React.FC = () => {
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
+    console.warn('This playground was built aiming compatibility with ag-ui-adk v0.3.1, please make sure your server is using this version.');
+    
     const agent = createAgent({
       url: agentUrl,
       state: AGENT_INITIAL_STATE
@@ -178,12 +180,12 @@ export const Playground: React.FC = () => {
         content: messageText
       } as UserMessage);
 
-      console.log('Agent messages before run:', agent.messages);
-      console.log('Agent state before run:', agent.state);
-
       if (Object.keys(agent.state).includes('user_current_time')){
         agent.state['user_current_time'] = new Date().toString();
       }
+
+      console.log('Agent messages before run:', agent.messages);
+      console.log('Agent state before run:', agent.state);
 
       const result = await agent.runAgent({
         tools: TOOLS
@@ -218,7 +220,7 @@ export const Playground: React.FC = () => {
         },
 
         onStateSnapshotEvent: (params: { event: StateSnapshotEvent }) => {
-          console.log('Agent state changed:', params.event);
+          console.log('Agent state snapshot:', params.event);
           setStateTextarea(JSON.stringify(params.event.snapshot, null, 2));
         },
 
@@ -286,6 +288,7 @@ export const Playground: React.FC = () => {
       });
 
       console.log('Agent run result:', result);
+      
       console.log('Agent messages after run:', agent.messages);
       console.log('Agent state after run:', agent.state);
     } catch (error) {
