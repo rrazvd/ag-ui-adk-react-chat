@@ -97,3 +97,14 @@ This playground is built using specific versions of AG-UI ADK components. For co
 
 - Ensure your AG-UI server version matches the ADK version used in this project
 - Some features may not work correctly with different AG-UI server versions
+
+## 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details on how to:
+
+- 🐛 Report issues and bugs
+- 🔧 Submit pull requests
+- 🎯 Find areas to contribute
+- 📋 Set up your development environment
+
+**Thank you for helping make this testing tool better for the community!** 🙏
