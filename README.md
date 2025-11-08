@@ -4,11 +4,11 @@ A simple AG-UI ADK React Chat playground to explore, understand, test and debug 
 
 This project was developed with AI assistance as a learning and experimentation tool, focusing on rapid prototyping and technology exploration rather than production-ready code standards.
 
-![Playground Screenshot](screenshot.png)
-
 ## 🌐 Playground
 
 🔗 **https://rrazvd.github.io/ag-ui-adk-react-chat/**
+
+![Playground Screenshot](screenshot.png)
 
 ## ✨ Features
 
