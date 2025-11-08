@@ -6,4 +6,5 @@ export default defineConfig({
   server: {
     port: 3005,
   },
+  base: '/ag-ui-adk-react-chat/'
 })
