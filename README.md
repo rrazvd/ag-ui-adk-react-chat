@@ -2,10 +2,9 @@
 
 A simple AG-UI ADK React Chat playground to explore, understand, test and debug AG-UI technology. It provides a controlled testing environment for experimenting with different configurations, troubleshooting issues, and validating agent behaviors.
 
-> 🌟 **If this project helps you with AG-UI testing and development, please consider giving it a star!** ⭐  
-> It helps make the project more discoverable so more developers can benefit and contribute to the community.
-
 > ⚠️ **Developed with AI assistance as a learning and experimentation tool, focusing on rapid prototyping and technology exploration rather than production-ready code standards.**
+
+> 🌟 **If this project helps you with AG-UI testing and development, please consider giving it a star!** ⭐  
 
 ## 🌐 Playground
 
