@@ -56,11 +56,11 @@ export GOOGLE_API_KEY="your-google-api-key-here"
 npm run dev
 ```
 
-> AG-UI ADK Server will be available on http://localhost:8000/ag-ui
-
-> AG-UI ADK Server documentation (all original ADK + AG-UI routes) will be available on http://localhost:8000/docs
-
-> AG-UI ADK React chat playground will be available on http://localhost:3005
+| Resource | URL | Description |
+|---------|-----|-------------|
+| 🚀 **AG-UI ADK Server** | http://localhost:8000/ag-ui | Main AG-UI endpoint |
+| 📚 **API Documentation** | http://localhost:8000/docs | All original ADK + AG-UI routes |
+| 🎮 **React Chat Playground** | http://localhost:3005 | Interactive testing interface |
 
 #### Option 2: Run playground interface only
 ```bash
