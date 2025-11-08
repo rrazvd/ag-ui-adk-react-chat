@@ -34,7 +34,7 @@ Ready to contribute code? We'd love your help!
 1. **Make** your changes and test thoroughly
 2. **Test** with different configurations and scenarios
 3. **Ensure** the playground still works as expected
-4. **Commit** with clear messages: `git commit -m "Add: description of your changes"`
+4. **Commit** with clear messages: `git commit -m "Description of your changes"`
 5. **Push** to your fork: `git push origin feature/your-feature-name`
 6. **Open** a Pull Request with a detailed description
 
