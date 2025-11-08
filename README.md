@@ -4,7 +4,17 @@ A simple AG-UI ADK React Chat playground to explore and understand the technolog
 
 ![Playground Screenshot](screenshot.png)
 
-## 🚀 Get started
+## 🌐 Playground
+
+🔗 **https://rrazvd.github.io/ag-ui-adk-react-chat/**
+
+- Configure the URL of any running server that uses AG-UI
+- Define and edit the agent's state
+- Have a chat with the agent
+- Create new threads
+- Debug through the browser console
+
+## 🚀 Get started: development
 
 ### 1. Install dependencies
 ```bash
