@@ -14,6 +14,7 @@ A simple AG-UI ADK React Chat playground to explore, understand and test the tec
 - **Custom Server URLs**: Connect to any AG-UI compatible server
 - **Environment Variables**: Configurable settings for different environments
 - **Initial State Setup**: Define custom initial agent states
+- **Extensible API Layer**: Preserves all original ADK SDK routes while extending with AG-UI endpoint (`/ag-ui`)
 
 ### 🤖 Interactive AI Agent
 - **Real-time Chat**: Seamless conversation interface with streaming responses
