@@ -2,6 +2,8 @@ node_modules
 ag-ui-docs
 .vscode
 /dist
+.venv
 agent/__pycache__
 agent/.venv
 agent/sessions.db
+.DS_Store
