@@ -1,6 +1,6 @@
 # AG-UI ADK React Chat Playground
 
-A simple AG-UI ADK React Chat playground to explore and understand the technology. 
+A simple AG-UI ADK React Chat playground to explore, understand and test the technology. 
 
 ![Playground Screenshot](screenshot.png)
 
@@ -8,11 +8,23 @@ A simple AG-UI ADK React Chat playground to explore and understand the technolog
 
 🔗 **https://rrazvd.github.io/ag-ui-adk-react-chat/**
 
-- Configure the URL of any running server that uses AG-UI
-- Define and edit the agent's state
-- Have a chat with the agent
-- Create new threads
-- Debug through the browser console
+## ✨ Features
+
+### 🌐 Flexible Configuration
+- **Custom Server URLs**: Connect to any AG-UI compatible server
+- **Environment Variables**: Configurable settings for different environments
+- **Initial State Setup**: Define custom initial agent states
+
+### 🤖 Interactive AI Agent
+- **Real-time Chat**: Seamless conversation interface with streaming responses
+- **Tool Integration**: Custom front-end tools for enhanced interaction (e.g., interactive lists)
+- **Context Awareness**: Maintains conversation context across messages
+
+### 🔧 Developer Tools
+- **Debug Console**: Browser console integration for debugging agent interactions
+- **State Management**: Real-time agent state visualization and editing
+- **Thread Management**: Create and manage multiple conversation threads
+- **Event Monitoring**: Track agent events (messages, tool calls, state changes)
 
 ## 🚀 Get started: development
 
