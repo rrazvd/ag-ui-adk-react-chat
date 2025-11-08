@@ -338,7 +338,7 @@ export const Playground: React.FC = () => {
             type="text"
             value={agentUrl}
             onChange={(e) => setAgentUrl(e.target.value)}
-            placeholder={AG_UI_URL}
+            placeholder={"http://your-ag-ui-server.com/ag-ui"}
             className="header__input"
           />
           <button 
