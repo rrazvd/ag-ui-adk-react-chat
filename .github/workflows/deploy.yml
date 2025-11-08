@@ -30,6 +30,7 @@ jobs:
     env:
       VITE_AG_UI_URL: ""
       VITE_INITIAL_STATE: ""
+      VITE_BASE_PATH: "/ag-ui-adk-react-chat/"
     steps:
       - name: Checkout
         uses: actions/checkout@v5
