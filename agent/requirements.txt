@@ -4,4 +4,4 @@ python-dotenv==1.2.1
 pydantic==2.12.3
 google-adk==1.17.0
 google-genai==1.42.0
-ag-ui-adk==0.3.1
+ag-ui-adk==0.3.3

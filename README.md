@@ -96,13 +96,6 @@ The playground supports URL query parameters for easy configuration sharing and 
 - JSON values in `state` parameter should be URL-encoded
 - All parameters are optional and will fallback to environment defaults
 
-## ⚠️ Disclaimer
-
-This playground is built using specific versions of AG-UI ADK components. For compatibility and optimal performance:
-
-- Ensure your AG-UI server version matches the ADK version used in this project
-- Some features may not work correctly with different AG-UI server versions
-
 ## 🤝 Contributing
 
 We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details on how to:

@@ -127,9 +127,7 @@ export const Playground: React.FC = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
-  useEffect(() => {
-    console.warn('This playground was built aiming compatibility with ag-ui-adk v0.3.1, please make sure your server is using this version.');
-    
+  useEffect(() => {    
     const agent = createAgent({
       url: agentUrl,
       state: initialAgentState,
