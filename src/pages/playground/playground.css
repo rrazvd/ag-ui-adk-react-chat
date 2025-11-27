@@ -178,6 +178,11 @@
   border: 1px solid #e9ecef;
 }
 
+.chat__header-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
 .chat__new-thread-button {
   background: #6c757d;
   color: white;
@@ -194,12 +199,27 @@
   transition: background-color 0.2s ease;
 }
 
+.chat__new-thread-button svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
 .chat__new-thread-button:hover {
   background: #5a6268;
 }
 
 .chat__new-thread-button:active {
   transform: scale(0.95);
+}
+
+.chat__button--copied {
+  background: #28a745 !important;
+  transition: all 0.3s ease;
+}
+
+.chat__button--copied:hover {
+  background: #218838 !important;
 }
 
 .chat__messages {
