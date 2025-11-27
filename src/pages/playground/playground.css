@@ -75,6 +75,15 @@
   transform: scale(0.98);
 }
 
+.header__button--success {
+  background: #28a745 !important;
+  transition: all 0.3s ease;
+}
+
+.header__button--success:hover {
+  background: #218838 !important;
+}
+
 .sidebar {
   width: 500px;
   background: #f8f9fa;
@@ -137,6 +146,24 @@
 .sidebar__button:disabled {
   background: #6c757d;
   cursor: not-allowed;
+}
+
+.sidebar__button--success {
+  background: #28a745 !important;
+  transition: all 0.3s ease;
+}
+
+.sidebar__button--success:hover:not(:disabled) {
+  background: #218838 !important;
+}
+
+.sidebar__button--error {
+  background: #dc3545 !important;
+  transition: all 0.3s ease;
+}
+
+.sidebar__button--error:hover:not(:disabled) {
+  background: #c82333 !important;
 }
 
 /* Chat Block */

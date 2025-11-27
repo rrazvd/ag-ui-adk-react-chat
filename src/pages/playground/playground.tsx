@@ -127,6 +127,9 @@ export const Playground: React.FC = () => {
   const [stateTextarea, setStateTextarea] = useState('');
   const [headersTextarea, setHeadersTextarea] = useState('');
   const [isUrlCopied, setIsUrlCopied] = useState(false);
+  const [stateUpdateStatus, setStateUpdateStatus] = useState<'success' | 'error' | null>(null);
+  const [headersUpdateStatus, setHeadersUpdateStatus] = useState<'success' | 'error' | null>(null);
+  const [connectStatus, setConnectStatus] = useState<'success' | null>(null);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -196,8 +199,14 @@ export const Playground: React.FC = () => {
       agent.state = newState;
       updateAgentStateUrl(stateTextarea);
       console.log('Agent state updated:', agent.state);
+      
+      setStateUpdateStatus('success');
+      setTimeout(() => setStateUpdateStatus(null), 2000);
     } catch (error) {
       console.error('Error parsing JSON state:', error);
+      
+      setStateUpdateStatus('error');
+      setTimeout(() => setStateUpdateStatus(null), 2000);
     }
   };
 
@@ -209,8 +218,12 @@ export const Playground: React.FC = () => {
       agent.headers = newHeaders;
       updateAgentHeadersUrl(headersTextarea);
       console.log('Agent headers updated:', newHeaders);
+      setHeadersUpdateStatus('success');
+      setTimeout(() => setHeadersUpdateStatus(null), 2000);
     } catch (error) {
       console.error('Error parsing JSON headers:', error);
+      setHeadersUpdateStatus('error');
+      setTimeout(() => setHeadersUpdateStatus(null), 2000);
     }
   };
 
@@ -383,6 +396,8 @@ export const Playground: React.FC = () => {
     const shouldPreserve = !!initialQueryParams.target || agentUrl !== AG_UI_URL;
     updateUrlQueryParam('target', agentUrl, shouldPreserve);
     createNewThread();
+    setConnectStatus('success');
+    setTimeout(() => setConnectStatus(null), 2000);
   };
 
   const onNewThreadClick = () => {
@@ -395,26 +410,10 @@ export const Playground: React.FC = () => {
       await navigator.clipboard.writeText(currentUrl);
       console.log('URL copied to clipboard:', currentUrl);
       
-      // Feedback visual que a URL foi copiada
       setIsUrlCopied(true);
       setTimeout(() => setIsUrlCopied(false), 2000);
     } catch (error) {
       console.error('Failed to copy URL to clipboard:', error);
-      // Fallback para seleção manual se a API clipboard falhar
-      try {
-        const textArea = document.createElement('textarea');
-        textArea.value = window.location.href;
-        document.body.appendChild(textArea);
-        textArea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textArea);
-        
-        // Feedback visual que a URL foi copiada
-        setIsUrlCopied(true);
-        setTimeout(() => setIsUrlCopied(false), 2000);
-      } catch (fallbackError) {
-        console.error('Failed to copy URL using fallback method:', fallbackError);
-      }
     }
   };
 
@@ -440,7 +439,7 @@ export const Playground: React.FC = () => {
             className="header__input"
           />
           <button 
-            className="header__button"
+            className={`header__button ${connectStatus ? `header__button--${connectStatus}` : ''}`}
             onClick={onConnectClick}
             title="Connect and create new thread"
           >
@@ -464,7 +463,7 @@ export const Playground: React.FC = () => {
             />
             <button 
               onClick={onUpdateStateClick} 
-              className="sidebar__button"
+              className={`sidebar__button ${stateUpdateStatus ? `sidebar__button--${stateUpdateStatus}` : ''}`}
               disabled={!agent}
             >
               Update State
@@ -484,7 +483,7 @@ export const Playground: React.FC = () => {
             />
             <button 
               onClick={onUpdateHeadersClick} 
-              className="sidebar__button"
+              className={`sidebar__button ${headersUpdateStatus ? `sidebar__button--${headersUpdateStatus}` : ''}`}
               disabled={!agent}
             >
               Update Headers
