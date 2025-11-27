@@ -18,7 +18,7 @@ import type {
 
 import { ItemsList } from '../../components';
 
-import { AG_UI_URL, AGENT_INITIAL_STATE } from '../../settings';
+import { AG_UI_URL, AGENT_INITIAL_STATE, AGENT_INITIAL_HEADERS } from '../../settings';
 import { getQueryParam, updateUrlQueryParam, parseJsonQueryParam } from '../../utils';
 
 import './playground.css';
@@ -110,11 +110,13 @@ export const Playground: React.FC = () => {
   const initialQueryParams = {
     target: getQueryParam('target'),
     state: getQueryParam('state'),
+    headers: getQueryParam('headers'),
     thread: getQueryParam('thread')
   };
   
   const initialAgentUrl = initialQueryParams.target || AG_UI_URL;
   const initialAgentState = parseJsonQueryParam(initialQueryParams.state, AGENT_INITIAL_STATE);
+  const initialAgentHeaders = parseJsonQueryParam(initialQueryParams.headers, AGENT_INITIAL_HEADERS);
   const initialThreadId = initialQueryParams.thread;
   
   const [agentUrl, setAgentUrl] = useState(initialAgentUrl);
@@ -123,6 +125,7 @@ export const Playground: React.FC = () => {
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [stateTextarea, setStateTextarea] = useState('');
+  const [headersTextarea, setHeadersTextarea] = useState('');
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -131,21 +134,24 @@ export const Playground: React.FC = () => {
     const agent = createAgent({
       url: agentUrl,
       state: initialAgentState,
+      headers: initialAgentHeaders,
       threadId: initialThreadId || undefined
     });
     setAgent(agent);
 
     updateUrlQueryParam('target', initialAgentUrl, !!initialQueryParams.target);
     updateUrlQueryParam('state', JSON.stringify(initialAgentState), !!initialQueryParams.state);
+    updateUrlQueryParam('headers', JSON.stringify(initialAgentHeaders), !!initialQueryParams.headers);
     updateThreadIdUrl(agent.threadId);
   }, []);
 
-  const createAgent = ({url, state, threadId} : {url: string, state: object, threadId?: string}) => {
+  const createAgent = ({url, state, headers, threadId} : {url: string, state: object, headers?: Record<string, string>, threadId?: string}) => {
     const agent = new HttpAgent({
       url,
       threadId,
       initialState: state,
-      initialMessages: [SYSTEM_MESSAGE]
+      initialMessages: [SYSTEM_MESSAGE],
+      headers: headers
     })
     console.log('Current thread id: ', agent.threadId)
     return agent;
@@ -163,9 +169,18 @@ export const Playground: React.FC = () => {
     if (agent) setStateTextarea(JSON.stringify(agent.state, null, 2));
   }, [agent]);
 
+  useEffect(() => {
+    setHeadersTextarea(JSON.stringify(initialAgentHeaders, null, 2));
+  }, []);
+
   const updateAgentStateUrl = (stateValue: string) => {
     const shouldPreserve = !!initialQueryParams.state || stateValue !== JSON.stringify(AGENT_INITIAL_STATE);
     updateUrlQueryParam('state', stateValue, shouldPreserve);
+  };
+
+  const updateAgentHeadersUrl = (headersValue: string) => {
+    const shouldPreserve = !!initialQueryParams.headers || headersValue !== JSON.stringify(AGENT_INITIAL_HEADERS);
+    updateUrlQueryParam('headers', headersValue, shouldPreserve);
   };
 
   const updateThreadIdUrl = (threadId: string) => {
@@ -182,6 +197,19 @@ export const Playground: React.FC = () => {
       console.log('Agent state updated:', agent.state);
     } catch (error) {
       console.error('Error parsing JSON state:', error);
+    }
+  };
+
+  const onUpdateHeadersClick = () => {
+    if (!agent) return;
+    
+    try {
+      const newHeaders = JSON.parse(headersTextarea);
+      agent.headers = newHeaders;
+      updateAgentHeadersUrl(headersTextarea);
+      console.log('Agent headers updated:', newHeaders);
+    } catch (error) {
+      console.error('Error parsing JSON headers:', error);
     }
   };
 
@@ -344,7 +372,8 @@ export const Playground: React.FC = () => {
     setMessages([]);
     setInputValue('');
     setIsLoading(false);
-    const newAgent = createAgent({url: agentUrl, state: agent?.state || {}});
+    const currentHeaders = headersTextarea ? JSON.parse(headersTextarea) : initialAgentHeaders;
+    const newAgent = createAgent({url: agentUrl, state: agent?.state || {}, headers: currentHeaders});
     updateThreadIdUrl(newAgent.threadId);
     setAgent(newAgent);
   };
@@ -409,6 +438,26 @@ export const Playground: React.FC = () => {
               disabled={!agent}
             >
               Update State
+            </button>
+          </div>
+          <div className="sidebar__section">
+            <label htmlFor="agent-headers" className="sidebar__label">
+              Headers:
+            </label>
+            <textarea
+              id="agent-headers"
+              value={headersTextarea}
+              onChange={(e) => setHeadersTextarea(e.target.value)}
+              placeholder='{}'
+              className="sidebar__textarea"
+              rows={8}
+            />
+            <button 
+              onClick={onUpdateHeadersClick} 
+              className="sidebar__button"
+              disabled={!agent}
+            >
+              Update Headers
             </button>
           </div>
         </div>

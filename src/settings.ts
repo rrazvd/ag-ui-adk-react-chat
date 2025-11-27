@@ -1,6 +1,7 @@
 const {
   VITE_AG_UI_URL = "http://localhost:8000/ag-ui",
-  VITE_INITIAL_STATE = '{"user_id":"user-123","user_name":"John Doe"}'
+  VITE_INITIAL_STATE = '{"user_id":"user-123","user_name":"John Doe"}',
+  VITE_INITIAL_HEADERS = '{"Content-Type":"application/json","Authorization":"Bearer your-token"}'
 } = import.meta.env;
 
 let parsedInitialState
@@ -10,9 +11,18 @@ try {
   console.error('Failed to parse VITE_INITIAL_STATE, verify if a valid JSON was provided.', error);
 }
 
+let parsedInitialHeaders
+try {
+  parsedInitialHeaders = JSON.parse(VITE_INITIAL_HEADERS);
+} catch (error) {
+  console.error('Failed to parse VITE_INITIAL_HEADERS, verify if a valid JSON was provided.', error);
+}
+
 const AGENT_INITIAL_STATE = parsedInitialState || {}
+const AGENT_INITIAL_HEADERS = parsedInitialHeaders || {}
 
 export {
   VITE_AG_UI_URL as AG_UI_URL,
-  AGENT_INITIAL_STATE
+  AGENT_INITIAL_STATE,
+  AGENT_INITIAL_HEADERS
 }
