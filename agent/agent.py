@@ -37,7 +37,7 @@ root_agent = Agent(
     tools=[get_items]
 )
 
-DATABASE_SERVICE_URI = "sqlite:///./sessions.db"
+DATABASE_SERVICE_URI = "sqlite+aiosqlite:///./sessions.db"
 
 # Define custom extractor that uses state
 def user_id_extractor(input: RunAgentInput) -> str:
