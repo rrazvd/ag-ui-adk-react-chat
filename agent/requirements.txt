@@ -3,6 +3,6 @@ uvicorn[standard]==0.38.0
 python-dotenv==1.2.1
 pydantic==2.12.3
 google-adk==1.19.0
-google-genai==1.45.0
+google-genai==1.52.0
 ag-ui-adk==0.3.3
 greenlet==3.2.4
