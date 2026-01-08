@@ -6,7 +6,8 @@ load_dotenv()
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from google.adk.agents import Agent
+from google.adk.tools.agent_tool import AgentTool
+from google.adk.agents.llm_agent import LlmAgent
 from google.adk.cli.fast_api import get_fast_api_app
 from google.adk.sessions import DatabaseSessionService
 from ag_ui.core import RunAgentInput
@@ -24,17 +25,26 @@ def get_items() -> list:
     ]
     return mocked_items
 
-root_agent = Agent(
+ItemsAgent = LlmAgent(
+    model="gemini-2.5-flash",
+    name="ItemsAgent",
+    instruction="""
+        You are a helpful assistant that provides information about available items.
+    """,
+    tools=[get_items]
+)
+
+root_agent = LlmAgent(
     name="GenericAgent",
     model="gemini-2.5-flash",
     instruction="""
-        You are a helpful assistant that provides information about available items.
-        ALWAYS Wait for the user to ask for the list of items before providing it.
+        You are a orchestration agent that helps users by utilizing the ItemsAgent tool to provide information about items.
+        When a user asks about items, you should call the ItemsAgent tool to get the list.
 
         ## USER CONTEXT:
         - User name: "{user_name}"
     """,
-    tools=[get_items]
+    tools=[AgentTool(agent=ItemsAgent)]
 )
 
 DATABASE_SERVICE_URI = "sqlite+aiosqlite:///./sessions.db"
