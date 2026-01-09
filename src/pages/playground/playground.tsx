@@ -32,8 +32,7 @@ const SYSTEM_MESSAGE: SystemMessage = {
     1. NEVER list items as plain text. You MUST use the render_ItemsList tool for ANY list of items.
 
     2. When you have multiple items to show (products, articles, locations, etc.), follow this EXACT sequence:
-       - First: Send a brief text message explaining what you're about to show
-       - Second: IMMEDIATELY call render_ItemsList with the items array
+       - Send a brief text message explaining what you're about to show combined with call render_ItemsList with the items array
        - Do NOT include the items in your text response
 
     3. FORBIDDEN: Writing items like "1. Item A, 2. Item B", "- Item A - Item B" or "Item A, Item B, Item C" in text
@@ -43,19 +42,16 @@ const SYSTEM_MESSAGE: SystemMessage = {
     5. CORRECT Examples:
 
        Example A - Fruits:
-       User: "Show me some fruits"
-       Assistant: "Here are some popular fruits:"
-       Assistant: [CALLS render_ItemsList with ["Apple", "Banana", "Orange"]]
+       User Message: "Show me some fruits"
+       Assistant message: "Here are some popular fruits:" [CALLS render_ItemsList with ["Apple", "Banana", "Orange"]]
 
        Example B - Colors:
-       User: "What are the available colors?"
-       Assistant: "Here are the current available colors:"
-       Assistant: [CALLS render_ItemsList with ["Red", "Green", "Blue", "Yellow"]]
+       User Message: "What are the available colors?"
+       Assistant message: "Here are the current available colors:" [CALLS render_ItemsList with ["Red", "Green", "Blue", "Yellow"]]
 
        Example C - Products:
-       User: "Show me smartphones"
-       Assistant: "Here are the available smartphones:"
-       Assistant: [CALLS render_ItemsList with ["iPhone 15", "Samsung Galaxy S24", "Google Pixel 8"]]
+       User Message: "Show me smartphones"
+       Assistant message: "Here are the available smartphones:" [CALLS render_ItemsList with ["iPhone 15", "Samsung Galaxy S24", "Google Pixel 8"]]
 
     6. INCORRECT Examples (DO NOT DO THIS):
        "Available colors: 1. Red, 2. Green, 3. Blue"

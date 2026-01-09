@@ -6,6 +6,7 @@ load_dotenv()
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from google.adk.agents import RunConfig
 from google.adk.tools.agent_tool import AgentTool
 from google.adk.agents.llm_agent import LlmAgent
 from google.adk.cli.fast_api import get_fast_api_app
@@ -35,11 +36,13 @@ ItemsAgent = LlmAgent(
 )
 
 root_agent = LlmAgent(
-    name="GenericAgent",
+    name="RootAgent",
     model="gemini-2.5-flash",
     instruction="""
         You are a orchestration agent that helps users by utilizing the ItemsAgent tool to provide information about items.
         When a user asks about items, you should call the ItemsAgent tool to get the list.
+
+        All messages with tool calls should have a text. Never respond with only a tool call.
 
         ## USER CONTEXT:
         - User name: "{user_name}"
@@ -55,8 +58,16 @@ def user_id_extractor(input: RunAgentInput) -> str:
         return input.state["user_id"]
     return "anonymous"
 
+class ADKAgentWithPlugins(ADKAgent):
+    def _default_run_config(self, input: RunAgentInput) -> RunConfig:
+        """Create default RunConfig with SSE streaming disabled."""
+        return RunConfig(
+            streaming_mode=None,
+            save_input_blobs_as_artifacts=True
+        )
+
 # Create ADK middleware agent instance
-adk_agent = ADKAgent(
+adk_agent = ADKAgentWithPlugins(
     adk_agent=root_agent,
     app_name="agent",
     user_id_extractor=user_id_extractor,
